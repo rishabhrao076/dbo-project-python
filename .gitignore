@@ -1,0 +1,35 @@
+# Ignore virtual environment
+venv/
+
+# Ignore environment configuration
+.env
+
+# Ignore IDE and editor files
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.log
+__pycache__/
+.idea/
+.vscode/
+
+# Ignore local configuration
+instance/
+
+# Ignore package files
+*.zip
+*.tar.gz
+*.tar.bz2
+*.tar.lz
+*.rar
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore configuration file with sensitive information
+config.py
