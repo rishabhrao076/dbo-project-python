@@ -23,11 +23,9 @@ def index():
     return render_template('index.html')
 
 @app.route('/login')
-def login():
-    # Data to be passed to the template
-    name = "Flask User"
+def login():    
     # Render the template and pass data to it
-    return render_template('index.html', name=name)
+    return render_template('login.html')
 
 @app.route('/register')
 def register():
