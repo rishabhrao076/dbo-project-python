@@ -25,7 +25,6 @@ def index():
 
 @app.route('/login')
 def login():    
-    # Render the template and pass data to it
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -39,8 +38,7 @@ def loginUser():
 
 @app.route('/register')
 def register():
-    # Render the template and pass data to it
-    return render_template('index.html')
+    return render_template('register.html')
 
 @app.route('/dashboard')
 def dashboard():
