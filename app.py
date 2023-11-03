@@ -1,6 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, validators
 from dotenv import load_dotenv
 from helpers.collectionHelpers import group_by_index, group_by_key
 
@@ -8,13 +10,23 @@ from helpers.collectionHelpers import group_by_index, group_by_key
 load_dotenv()
 
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = os.getenv('APP_KEY')
 # Configure the PostgreSQL database URI using environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USERNAME')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_DATABASE')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
+
+class RegistrationForm(FlaskForm):
+    first_name = StringField('First Name', validators=[validators.DataRequired()])
+    last_name = StringField('Last Name', validators=[validators.DataRequired()])
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
+    password = PasswordField('Password', validators=[validators.DataRequired()])
+    password_confirmation = PasswordField('Confirm Password', validators=[
+        validators.DataRequired(),
+        validators.EqualTo('password', message='Passwords must match')
+    ])
 
 @app.route('/')
 def index():
@@ -38,7 +50,26 @@ def loginUser():
 
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    form = RegistrationForm()
+
+    return render_template('register.html',form=form)
+
+@app.route('/register', methods=['POST'])
+def registerUser():
+    form = RegistrationForm()
+
+    if form.validate_on_submit():
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        email = form.email.data
+        password = form.password.data
+
+        query = db.sql.text("insert into users(first_name,last_name,email,password) values(:first_name, :last_name, :email, :password)")
+        db.session.execute(query,{'first_name':first_name, 'last_name':last_name, 'email':email, 'password':password })
+        # Commit the transaction
+        db.session.commit()
+
+    return render_template('register.html',form=form)
 
 @app.route('/dashboard')
 def dashboard():

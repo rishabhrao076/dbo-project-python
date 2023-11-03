@@ -2,7 +2,7 @@
 
 {% block content %}
 <form method="POST" action="{{ url_for('register') }}">
-    <input type="hidden" name="_token" value="Your_CSRF_Token_Here" autocomplete="off">
+    {{ form.hidden_tag() }}
     <!-- First Name -->
     <div>
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="first_name">
