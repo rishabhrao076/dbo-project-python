@@ -6,8 +6,8 @@
     <h3 class="font-extrabold text-lg my-3 mx-1">{{ genre }}</h3>
     <div class="flex gap-4 overflow-x-scroll p-2">
         {% for item in genreCollection %}
-        <div class="bg-white w-[200px] h-24 p-2 rounded overflow-hidden flex-none text-center pointer" x-data="" x-on:click="$dispatch('open-modal', 'content-metadata'); $store.contentStore.getData({{item[0]}})">
-            {{ item[1] }}
+        <div class="bg-white w-[200px] h-24 p-2 rounded overflow-hidden flex-none text-center pointer" x-data="" x-on:click="$dispatch('open-modal', 'content-metadata'); $store.contentStore.getData({{item['content_id']}})">
+            {{ item['title'] }}
         </div>
     {% endfor %}
     </div>
@@ -43,11 +43,11 @@
                         <span>Episodes</span>
                     </template>
                 </h2>
-                <!-- <template x-for="media in $store.contentStore.medias" :key="media.media_id">
+                <template x-for="media in $store.contentStore.medias" :key="media.media_id">
                     <div class="p-4 shadow-md">
                         <span class="text-xl font-bold" x-text="media.media_title"></span>
                     </div>
-                </template> -->
+                </template>
             </div>
         </div>
     </div>
@@ -69,7 +69,7 @@
             medias: {},
             getData(contentId) {
                 // Make an Ajax request using Axios
-                axios.get('{{url_for("login")}}',{
+                axios.get('{{url_for("contentMetadata")}}',{
                     params: {
                         contentId: contentId,
                     }
@@ -77,13 +77,15 @@
                 .then(response => {
                     // Set the data to a variable accessible in the component
                     console.log(response);
-                    this.title = response.data[0].title;
-                    this.director = response.data[0].director;
-                    this.description = response.data[0].description;
-                    this.genre = response.data[0].genres;
-                    this.language = response.data[0].languages;
-                    this.content_type = response.data[0].content_type;
-                    this.medias = response.data;
+                    if(response.data.length > 0){
+                        this.title = response.data[0].title;
+                        this.director = response.data[0].director;
+                        this.description = response.data[0].description;
+                        this.genre = response.data[0].genres;
+                        this.language = response.data[0].languages;
+                        this.content_type = response.data[0].content_type;
+                        this.medias = response.data;
+                    }
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
