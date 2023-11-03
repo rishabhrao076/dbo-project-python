@@ -100,6 +100,11 @@ def register():
 
     return render_template('register.html',form=form)
 
+@app.route('/profile')
+def profile():    
+    return render_template('profile.html')
+
+
 @app.route('/register', methods=['POST'])
 def registerUser():
     form = RegistrationForm()

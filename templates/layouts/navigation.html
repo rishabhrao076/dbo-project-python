@@ -1,0 +1,50 @@
+<nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <!-- Logo -->
+                <div class="shrink-0 flex items-center">
+                    <a href="/dashboard">
+                        <img height="200" width="100" src="/static/assets/netflix-4.svg"/>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <a href="/movies" :active="">
+                        Movies
+                    </a>
+                    <a href="/tvshows" :active="">
+                        TV Shows
+                    </a>
+                    <a href="/dashboard" :active="">
+                        Browse by Languages
+                    </a>
+                </div>
+            </div>
+
+            <!-- Settings Dropdown -->
+            <div class="hidden sm:flex sm:items-center">
+               <button class="mr-2 flex items-center">
+                <img src="/static/assets/Netflix-avatar.png" class="h-9 rounded-lg" alt="user avatar">
+                <a href="/profile"> My profile</a>
+               </button>
+               <button>
+                <a> Logout</a>
+               </button>
+            </div>
+
+           
+    </div>
+
+
+
+
+</nav>
+
+<script>
+ function openprofile(){
+    alert('opened')
+ }
+</script>
