@@ -1,0 +1,36 @@
+<div class="p-6">
+    <div class="grid grid-cols-2">
+        <h2 class="text-2xl text-gray-900 dark:text-gray-100 col-span-2 mb-4" x-text="$store.contentStore.title">
+            Movie Title
+        </h2>
+        <div class="text-medium col-span-1" x-text="$store.contentStore.description">
+            Description
+        </div>
+        <div class="text-medium col-span-1 flex flex-col">
+            <div>
+                <span class="font-bold">Director:</span><span x-text="$store.contentStore.director" ></span>
+            </div>
+            <div>
+                <span class="font-bold">Genre:</span><span x-text="$store.contentStore.genre"></span>
+            </div>
+            <div>
+                <span class="font-bold">Languages:</span><span x-text="$store.contentStore.language"></span>
+            </div>
+        </div>
+        <div class="col-span-2 mb-4 flex flex-col">
+            <h2 class="text-xl font-bold m-2">
+                <template x-if="$store.contentStore.content_type == 1">
+                    <span>Movie</span>
+                </template>
+                <template x-if="$store.contentStore.content_type != 1">
+                    <span>Episodes</span>
+                </template>
+            </h2>
+            <template x-for="media in $store.contentStore.medias" :key="media.media_id">
+                <div class="p-4 shadow-md">
+                    <span class="text-xl font-bold" x-text="media.media_title"></span>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
