@@ -101,6 +101,8 @@ def loginUser():
                 user_obj = User(user)
                 login_user(user_obj)
                 return redirect(url_for('dashboard'))
+            flash('Invalid credentials provided')
+            return redirect(url_for('login'))
         else:
             flash('Invalid credentials provided')
             return redirect(url_for('login'))
