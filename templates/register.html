@@ -11,6 +11,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="first_name" type="text" name="first_name" required="required" autocomplete="given-name">
+        {% if form.first_name.errors %}
+            {% for error in form.first_name.errors %}
+                <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                        <li>{{ error }}</li>
+                </ul>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <!-- Last Name -->
@@ -21,6 +28,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="last_name" type="text" name="last_name" required="required" autocomplete="family-name">
+            {% if form.last_name.errors %}
+                {% for error in form.last_name.errors %}
+                    <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                            <li>{{ error }}</li>
+                    </ul>
+                {% endfor %}
+            {% endif %}
     </div>
 
     <!-- Email Address -->
@@ -31,6 +45,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="email" type="email" name="email" required="required" autocomplete="username">
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                            <li>{{ error }}</li>
+                    </ul>
+                {% endfor %}
+            {% endif %}
     </div>
 
     <!-- Password -->
@@ -41,6 +62,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="password" type="password" name="password" required="required" autocomplete="new-password">
+        {% if form.password.errors %}
+            {% for error in form.password.errors %}
+                <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                        <li>{{ error }}</li>
+                </ul>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <!-- Confirm Password -->
@@ -51,6 +79,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="password_confirmation" type="password" name="password_confirmation" required="required" autocomplete="new-password">
+        {% if form.password_confirmation.errors %}
+            {% for error in form.password_confirmation.errors %}
+                <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                        <li>{{ error }}</li>
+                </ul>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <div class="flex items-center justify-end mt-4">
