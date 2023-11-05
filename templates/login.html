@@ -3,6 +3,15 @@
 {% block content %}
 <form method="POST" action="{{url_for('login')}}">
     {{ form.hidden_tag() }}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
     <!-- Email Address -->
     <div>
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="email">
@@ -11,6 +20,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="email" type="email" name="email" required="required" autofocus="autofocus" autocomplete="username">
+        {% if form.email.errors %}
+            {% for error in form.email.errors %}
+                <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                        <li>{{ error }}</li>
+                </ul>
+            {% endfor %}
+        {% endif %}  
     </div>
 
     <!-- Password -->
@@ -21,6 +37,13 @@
         <input
             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
             id="password" type="password" name="password" required="required" autocomplete="current-password">
+        {% if form.password.errors %}
+            {% for error in form.password.errors %}
+                <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                        <li>{{ error }}</li>
+                </ul>
+            {% endfor %}
+        {% endif %}  
     </div>
 
     <!-- Remember Me -->
@@ -43,7 +66,7 @@
             class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 ml-3">
             Log in
         </button>
-    </div>
+    </div>          
 </form>
 
 {% endblock %}

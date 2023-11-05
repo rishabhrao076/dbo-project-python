@@ -45,6 +45,11 @@ class UpdateUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[validators.DataRequired()])
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
 
+class UpdatePasswordForm(FlaskForm):
+    current_password = StringField('First Name', validators=[validators.DataRequired()])
+    last_name = StringField('Last Name', validators=[validators.DataRequired()])
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
+
 class User(UserMixin):
     def __init__(self, user_data):
         self.id = user_data['user_id']
