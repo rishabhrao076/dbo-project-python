@@ -3,11 +3,14 @@
 
 {% block content %}
 
-<x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        Profile
-    </h2>
-</x-slot>
+<header class="bg-white dark:bg-gray-800 shadow">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            Profile
+        </h2>
+    </div>
+</header>
+
 
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -24,16 +27,27 @@
                         </p>
                     </header>
 
-                    <form method="post" action="http://localhost:8000/profile" class="mt-6 space-y-6">
+                    <form method="post" action="{{url_for('updateUser')}}" class="mt-6 space-y-6">
                         <!-- ADD CSRF HERE -->
+                        {{ updateForm.hidden_tag() }}
+
                         <div>
-                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="name">
-                                Name
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="first_name">
+                                First Name
                             </label>
                             <input
                                 class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
-                                id="name" name="name" type="text" value="Test" required="required" autofocus="autofocus"
-                                autocomplete="name">
+                                id="first_name" name="first_name" type="text" value="{{ current_user.first_name }}" required="required" autofocus="autofocus"
+                                autocomplete="first_name">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="last_name">
+                                Last Name
+                            </label>
+                            <input
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                id="last_name" name="last_name" type="text" value="{{ current_user.last_name }}" required="required" autofocus="autofocus"
+                                autocomplete="last_name">
                         </div>
                         <div>
                             <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="email">
@@ -41,11 +55,8 @@
                             </label>
                             <input
                                 class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
-                                id="email" name="email" type="email" value="carolina05@example.com" required="required"
-                                autocomplete="username">
-                            <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
-                                <li>The email has already been taken.</li>
-                            </ul>
+                                id="email" name="email" type="email" value="{{ current_user.email }}" required="required"
+                                autocomplete="email">
                         </div>
                         <div class="flex items-center gap-4">
                             <button type="submit"
@@ -79,6 +90,59 @@
             </div>
         </x-modal>
 
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <div class="max-w-xl">
+                <section class="space-y-6">
+                    <header>
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Delete Account
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.
+                        </p>
+                    </header>
+                    <button x-data=""
+                    x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')" type="button" class='inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150'>
+                        Delete Account
+                    </button>
+                </section>
+            </div>
+        </div>
+        {% call modal.modal_dialog("confirm-user-deletion") %}
+        <div class="p-6">
+            <form method="post" action="{{url_for('deleteUser')}}" class="p-6">
+                <!-- CSRF HERE -->
+                {{ deleteForm.hidden_tag() }}
+
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Are you sure you want to delete your account?
+                </h2>
+    
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.'
+                </p>
+    
+                <div class="mt-6">
+                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300 sr-only" for="password">
+                        Enter Password
+                    </label>
+                    <input
+                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full mt-1 block w-3/4"
+                        id="password" name="password" type="password" required="required" autofocus="autofocus" placeholder="Password"
+                        >    
+                </div>
+    
+                <div class="mt-6 flex justify-end">
+                    <button x-on:click="$dispatch('close')" type="button" class='inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150'>
+                        Cancel
+                    </button>
+                    <button class='ml-3 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150'>
+                        Delete Account
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endcall %}
 
     </div>
 </div>

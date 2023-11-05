@@ -36,11 +36,10 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center">
                <button class="mr-2 flex items-center">
-                <img src="/static/assets/Netflix-avatar.png" class="h-9 rounded-lg" alt="user avatar">
-                <a href="/profile"> My profile</a>
+                <a href="/profile"><img src="/static/assets/Netflix-avatar.png" class="h-9 rounded-lg" alt="user avatar"></a>
                </button>
                <button>
-                <a> Logout</a>
+                <a href="{{url_for('logout')}}"> Logout</a>
                </button>
             </div>
 

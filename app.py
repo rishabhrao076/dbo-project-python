@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 from helpers.collectionHelpers import group_by_index, group_by_key, verify_password, generate_password_hash
 
@@ -37,6 +37,13 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', validators=[validators.DataRequired()])
 
+class DeleteUserForm(FlaskForm):
+    password = PasswordField('Password',validators=[validators.DataRequired()])
+
+class UpdateUserForm(FlaskForm):
+    first_name = StringField('First Name', validators=[validators.DataRequired()])
+    last_name = StringField('Last Name', validators=[validators.DataRequired()])
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
 
 class User(UserMixin):
     def __init__(self, user_data):
@@ -54,7 +61,6 @@ def load_user(user_id):
     query = db.sql.text("select * from users where user_id=:user_id")
     user_data = db.session.execute(query,{'user_id': user_id}).fetchone()
 
-
     if user_data:
         user = User(user_data._asdict())
     else:
@@ -64,6 +70,8 @@ def load_user(user_id):
                 'last_name': '',
                 'email': '',
             })
+    print(user)
+    
     return user
 
 @app.route('/login')
@@ -100,11 +108,6 @@ def register():
 
     return render_template('register.html',form=form)
 
-@app.route('/profile')
-def profile():    
-    return render_template('profile.html')
-
-
 @app.route('/register', methods=['POST'])
 def registerUser():
     form = RegistrationForm()
@@ -114,7 +117,6 @@ def registerUser():
         last_name = form.last_name.data
         email = form.email.data
         password = form.password.data
-
         query = db.sql.text("select * from users where email=:email")
         user = db.session.execute(query,{'email': email}).fetchone()
 
@@ -124,12 +126,15 @@ def registerUser():
             user = db.session.execute(query,{'first_name':first_name, 'last_name':last_name, 'email':email, 'password':password })
             # Commit the transaction
             db.session.commit()
-            print(user.lastrowid)
+
+            query = db.sql.text("select * from users where email=:email")
+            user = db.session.execute(query,{'email': email}).fetchone()._asdict()
+
             user_obj = User({
-                'user_id': user.lastrowid,
-                'first_name': first_name,
-                'last_name': last_name,
-                'email': email,
+                'user_id': user['user_id'],
+                'first_name': user['first_name'],
+                'last_name': user['last_name'],
+                'email': user['email'],
             })
 
             login_user(user_obj)
@@ -143,6 +148,44 @@ def registerUser():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/profile')
+@login_required
+def profile():
+    updateForm = UpdateUserForm()
+    deleteForm = DeleteUserForm()
+    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm)
+
+@app.route('/update-user',methods=['POST'])
+@login_required
+def updateUser():    
+    form = UpdateUserForm()
+    print(form.validate())
+    if form.validate():
+        query = db.sql.text("update users set first_name=:first_name,last_name=:last_name,email=:email where user_id=:user_id")
+        user = db.session.execute(query,{'email': form.email.data,'first_name': form.first_name.data, 'last_name':form.last_name.data,'user_id':current_user.id})
+        db.session.commit()
+    return redirect(url_for('profile'))
+
+
+@app.route('/delete-user',methods=['POST'])
+@login_required
+def deleteUser():
+    form = DeleteUserForm()
+    if form.validate():
+        query = db.sql.text("select * from users where email=:email")
+        user = db.session.execute(query,{'email': current_user.email}).fetchone()
+
+        if user:
+            user = user._asdict()
+            if verify_password(hashedpassword=user['password'],password=form.data['password']):
+                logout_user()
+                query = db.sql.text("delete from users where email=:email")
+                db.session.execute(query,{'email': user['email']})
+                db.session.commit()
+                # return redirect(url_for('index'))
+                return redirect(url_for('index'))
+    return redirect(url_for('profile'))
 
 @app.route('/dashboard')
 @login_required
