@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, validators
+from wtforms import StringField, PasswordField, validators, DateField
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 from helpers.collectionHelpers import group_by_index, group_by_key, verify_password, generate_password_hash
@@ -49,6 +49,23 @@ class UpdatePasswordForm(FlaskForm):
     current_password = StringField('First Name', validators=[validators.DataRequired()])
     last_name = StringField('Last Name', validators=[validators.DataRequired()])
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
+
+class CardForm(FlaskForm):
+    number = StringField('Card Number', validators=[
+        validators.DataRequired(),
+        validators.Length(min=16, max=16, message='Card number must be 16 digits')
+    ])
+    cvv = StringField('CVV', validators=[
+        validators.DataRequired(),
+        validators.Length(min=3, max=4, message='CVV must be 3 or 4 digits')
+    ])
+    expiry = DateField('Expiry Date', format='%Y-%m-%d', validators=[
+        validators.DataRequired()
+    ])
+    name = StringField('Cardholder Name', validators=[
+        validators.DataRequired(),
+        validators.Length(min=2, message='Cardholder name must have at least 2 characters')
+    ])
 
 class User(UserMixin):
     def __init__(self, user_data):
@@ -161,7 +178,8 @@ def logout():
 def profile():
     updateForm = UpdateUserForm()
     deleteForm = DeleteUserForm()
-    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm)
+    cardForm = CardForm()
+    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm)
 
 @app.route('/update-user',methods=['POST'])
 @login_required

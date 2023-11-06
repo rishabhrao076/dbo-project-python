@@ -91,78 +91,78 @@
             </div>
         </div>
 
-                <!-- edit password start -->
-                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                    <div class="max-w-xl">
-                        <section>
-                            <header>
-                                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    Update Password
-                                </h2>
+        <!-- edit password start -->
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <div class="max-w-xl">
+                <section>
+                    <header>
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Update Password
+                        </h2>
 
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Update your password.
-                                </p>
-                            </header>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            Update your password.
+                        </p>
+                    </header>
 
-                            <form method="post" action="{{url_for('updateUser')}}" class="mt-6 space-y-6">
-                                <!-- ADD CSRF HERE -->
-                                {{ updateForm.hidden_tag() }}
+                    <form method="post" action="{{url_for('updateUser')}}" class="mt-6 space-y-6">
+                        <!-- ADD CSRF HERE -->
+                        {{ updateForm.hidden_tag() }}
 
-                                <div>
-                                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
-                                        for="current_password">
-                                        Current Password
-                                    </label>
-                                    <input
-                                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
-                                        id="current_password" name="current_password" type="text" value=""
-                                        required="required" autofocus="autofocus" autocomplete="current_password">
+                        <div>
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                for="current_password">
+                                Current Password
+                            </label>
+                            <input
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                id="current_password" name="current_password" type="text" value="" required="required"
+                                autofocus="autofocus" autocomplete="current_password">
 
-                                    <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
-                                        <li>error</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
-                                        for="new_password">
-                                        New Password
-                                    </label>
-                                    <input
-                                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
-                                        id="new_password" name="new_password" type="text" value="" required="required"
-                                        autofocus="autofocus" autocomplete="new_password">
+                            <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                                <li>error</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                for="new_password">
+                                New Password
+                            </label>
+                            <input
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                id="new_password" name="new_password" type="text" value="" required="required"
+                                autofocus="autofocus" autocomplete="new_password">
 
-                                    <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
-                                        <li>error</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
-                                        for="confirm_password">
-                                        Confirm Password
-                                    </label>
-                                    <input
-                                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
-                                        id="confirm_password" name="confirm_password" type="text" value=""
-                                        required="required" autofocus="autofocus" autocomplete="confirm_password">
+                            <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                                <li>error</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                for="confirm_password">
+                                Confirm Password
+                            </label>
+                            <input
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                id="confirm_password" name="confirm_password" type="text" value="" required="required"
+                                autofocus="autofocus" autocomplete="confirm_password">
 
-                                    <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
-                                        <li>error</li>
-                                    </ul>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <button type="submit"
-                                        class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                                        Save
-                                    </button>
-                                </div>
-                            </form>
-                        </section>
+                            <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+                                <li>error</li>
+                            </ul>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </section>
 
-                    </div>
-                </div>
-                <!-- edit password ends -->
+            </div>
+        </div>
+        <!-- edit password ends -->
 
 
         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
@@ -269,6 +269,55 @@
                     </button>
                 </div>
             </form>
+        </div>
+        {% endcall %}
+
+        {% call modal.modal_dialog("confirm-card-deletion") %}
+        <div class="p-8">
+            <h1>Add Card</h1>
+            <section>
+                <form method="post" action="" class="mt-6 space-y-6">
+                    {{ cardForm.hidden_tag() }}
+                    <div>
+                        <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="name">
+                            Card Holder Name
+                        </label>
+                        <input
+                            class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                            id="name" name="name" type="name" required="required">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="number">
+                            Card Number
+                        </label>
+                        <input
+                            class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                            id="number" name="number" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}"
+                            required="required">
+                    </div>
+                    <div class="flex">
+                        <div class="block w-6/12">
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="cvv">
+                                Card CVV
+                            </label>
+                            <input
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-6/12"
+                                id="cvv" name="cvv" type="cvv" required="required">
+                        </div>
+                        <div class="block w-6/12">
+                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="expiry">
+                                Card expiry
+                            </label>
+                            <input
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-6/12"
+                                id="expiry" name="expiry" pa="pa" type="date" required="required">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="p-2 bg-green-600 text-white rounded">Save Changes</button>
+                    </div>
+                </form>
+            </section>
         </div>
         {% endcall %}
 
