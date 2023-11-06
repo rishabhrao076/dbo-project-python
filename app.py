@@ -192,6 +192,23 @@ def updateUser():
         db.session.commit()
     return redirect(url_for('profile'))
 
+@app.route('/add-card',methods=['POST'])
+@login_required
+def addCard():
+    form = CardForm()
+
+    if form.validate():
+        name = form.name.data
+        number = form.number.data
+        cvv = form.cvv.data
+        expiry = form.expiry.data
+
+        query = db.sql.text("insert into card_information(name,card_number,expiry,cvv,user_id) values(:name, :number, :expiry, :cvv, :user_id)")
+        card = db.session.execute(query,{'name':name, 'number':number, 'cvv':cvv, 'expiry':expiry, 'user_id':current_user.id })
+        # Commit the transaction
+        db.session.commit()
+        
+    return redirect(url_for('profile'))
 
 @app.route('/delete-user',methods=['POST'])
 @login_required
