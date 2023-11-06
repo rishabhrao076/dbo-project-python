@@ -179,7 +179,9 @@ def profile():
     updateForm = UpdateUserForm()
     deleteForm = DeleteUserForm()
     cardForm = CardForm()
-    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm)
+    query = db.sql.text("select * from card_information where user_id=:user_id")
+    cards = db.session.execute(query,{'user_id':current_user.id })
+    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards)
 
 @app.route('/update-user',methods=['POST'])
 @login_required
@@ -207,7 +209,7 @@ def addCard():
         card = db.session.execute(query,{'name':name, 'number':number, 'cvv':cvv, 'expiry':expiry, 'user_id':current_user.id })
         # Commit the transaction
         db.session.commit()
-        
+
     return redirect(url_for('profile'))
 
 @app.route('/delete-user',methods=['POST'])
