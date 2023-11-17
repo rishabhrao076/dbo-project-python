@@ -217,9 +217,73 @@
                         <h1>Add Card</h1>
                     </button>
                     {% endif %}
-                    <a href="/billing-history"
-                        class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mt-2">View
-                        Billing History</a>
+                    <a href=""
+                        class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mt-2">
+                        View Billing History</a>
+                </section>
+            </div>
+        </div>
+
+        <!-- movies watched -->
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <div class="max-w-xl">
+                <section>
+                    <header>
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Watch Stats
+                        </h2>
+                    </header>
+                    <div class="container">
+                        <div class="row row-cols-2">
+                            <div class="col-6 p-0">
+                                Movies and Shows watched
+                            </div>
+                            <div class="col-4">
+                                <h1>
+                                    {{totalwatched['count']}}
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="row row-cols-2">
+                            <div class="col-6 p-0">
+                                Movies and Shows liked
+                            </div>
+                            <div class="col-4">
+                                <h1>
+                                    {{totalliked['count']}}
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="row row-cols-2">
+                            <div class="col-6 p-0">
+                                Screen Time
+                            </div>
+                            <div class="col-4">
+                                <h1>
+                                    {% if(totalscreen) %}
+                                    {{totalscreen}}
+                                    {% else %}
+                                    0
+                                    {% endif %}
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="row row-cols-2">
+                            <div class="col-6 p-0">
+                               Favorite Genre
+                            </div>
+                            <div class="col-4">
+                                <h1>
+                                    {% if(favgenre) %}
+                                    {{favgenre}}
+                                    {% else %}
+                                    0
+                                    {% endif %}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
                 </section>
             </div>
         </div>
