@@ -270,7 +270,28 @@ def tvShows():
     
     return render_template('dashboard.html',items=items)
 
+@app.route('/olap-example')
+@login_required
+def olapExample():
+    query = db.sql.text('''select user_id, billing_date, plan, sum(amount_paid) from billing_history group by rollup(user_id,billing_date, plan);''')
 
+    items = db.session.execute(query).fetchall()
+
+    items = [r._asdict() for r in items]
+
+            
+    return render_template('olap.html',items=items)
+
+@app.route('/search')
+@login_required
+def search():
+    query = db.sql.text("select * from contents where title like :title limit 100;")
+
+    items = db.session.execute(query,{'title':'%'+request.args.get('title')+'%'}).fetchall()
+
+    items = [r._asdict() for r in items]
+
+    return render_template('search.html',items=items)
 
 @app.route('/content-metadata')
 @login_required
