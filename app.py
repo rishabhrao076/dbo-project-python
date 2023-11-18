@@ -46,9 +46,12 @@ class UpdateUserForm(FlaskForm):
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
 
 class UpdatePasswordForm(FlaskForm):
-    current_password = StringField('First Name', validators=[validators.DataRequired()])
-    last_name = StringField('Last Name', validators=[validators.DataRequired()])
-    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
+    current_password = PasswordField('Password', validators=[validators.DataRequired()])
+    new_password = PasswordField('Password', validators=[validators.DataRequired()])
+    password_confirmation = PasswordField('Confirm Password', validators=[
+        validators.DataRequired(),
+        validators.EqualTo('new_password', message='Passwords must match')
+    ])
 
 class CardForm(FlaskForm):
     number = StringField('Card Number', validators=[
@@ -179,9 +182,10 @@ def profile():
     updateForm = UpdateUserForm()
     deleteForm = DeleteUserForm()
     cardForm = CardForm()
+    updatePasswordForm = UpdatePasswordForm()
     query = db.sql.text("select * from card_information where user_id=:user_id")
     cards = db.session.execute(query,{'user_id':current_user.id })
-    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards)
+    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm)
 
 @app.route('/update-user',methods=['POST'])
 @login_required
