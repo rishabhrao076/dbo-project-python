@@ -213,6 +213,15 @@ def profile():
     query = db.sql.text("select * from card_information where user_id=:user_id")
     cards = db.session.execute(query,{'user_id':current_user.id })
 
+    query1 = db.sql.text("select count(*) from watch_history where user_id=:user_id")
+    totalwatched = db.session.execute(query1,{'user_id':current_user.id}).fetchone()._asdict()
+    query2 = db.sql.text("select count(*) from likes where user_id=:user_id and status=true")
+    totalliked = db.session.execute(query2,{'user_id':current_user.id}).fetchone()._asdict()
+    query3 = db.sql.text("select sum(TO_TIMESTAMP(progress, 'HH24:MI:SS')::TIME) as totalwatch from watch_history where user_id=:user_id")
+    totalscreen = db.session.execute(query3,{'user_id':current_user.id}).fetchone()._asdict()
+    query4 = db.sql.text("select max(genre) as favgenre from contents c, content_genre cg , genre g,watch_history w, media m  where w.media_id = m.media_id and c.content_id = m.content_id and cg.content_id=c.content_id and g.genre_id=cg.genre_id  and w.user_id=:user_id")
+    favgenre = db.session.execute(query4,{'user_id':current_user.id}).fetchone()._asdict()
+
     # Update Password code here
     if updatePasswordForm.validate_on_submit():
         user = query = db.sql.text("select * from users where email=:email")
@@ -224,9 +233,11 @@ def profile():
             user = db.session.execute(query,{'user_id':current_user.id, 'new_password': new_password})
             db.session.commit()
 
-        return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm)
+        return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm,
+        totalwatched=totalwatched, totalliked=totalliked, totalscreen=totalscreen['totalwatch'], favgenre=favgenre['favgenre'] )
 
-    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm)
+    return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm,
+    totalwatched=totalwatched, totalliked=totalliked, totalscreen=totalscreen['totalwatch'], favgenre=favgenre['favgenre'] )
 
 @app.route('/update-user',methods=['POST'])
 @login_required
