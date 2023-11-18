@@ -74,6 +74,14 @@ class CardForm(FlaskForm):
         validators.Length(min=2, message='Cardholder name must have at least 2 characters')
     ])
 
+class BillForm(FlaskForm):
+    month = StringField('Month', validators=[
+        validators.DataRequired()
+    ]) 
+    year = StringField('Year', validators=[
+        validators.DataRequired()
+    ])
+
 class User(UserMixin):
     def __init__(self, user_data):
         self.id = user_data['user_id']
@@ -210,6 +218,7 @@ def profile():
     deleteForm = DeleteUserForm()
     cardForm = CardForm()
     updatePasswordForm = UpdatePasswordForm()
+    
     query = db.sql.text("select * from card_information where user_id=:user_id")
     cards = db.session.execute(query,{'user_id':current_user.id })
 
@@ -221,7 +230,7 @@ def profile():
     totalscreen = db.session.execute(query3,{'user_id':current_user.id}).fetchone()._asdict()
     query4 = db.sql.text("select max(genre) as favgenre from contents c, content_genre cg , genre g,watch_history w, media m  where w.media_id = m.media_id and c.content_id = m.content_id and cg.content_id=c.content_id and g.genre_id=cg.genre_id  and w.user_id=:user_id")
     favgenre = db.session.execute(query4,{'user_id':current_user.id}).fetchone()._asdict()
-
+   
     # Update Password code here
     if updatePasswordForm.validate_on_submit():
         user = query = db.sql.text("select * from users where email=:email")
@@ -349,16 +358,54 @@ def search():
 
     return render_template('search.html',items=items)
 
-@app.route('/billing-history')
+@app.route('/billing-history', methods=['POST'])
 @login_required
 def billingHistory():
-    query = db.sql.text("select * from billing_history where user_id=:user;")
+    # months=[
+    #      'January',
+    #      'February',
+    #      'March',
+    #      'April',
+    #      'May',
+    #      'June',
+    #      'July',
+    #      'August',
+    #      'September',
+    #      'October',
+    #     'November',
+    #      'December'
+    # ]
+    billForm = BillForm()
+    month = billForm.month.data
+    year = billForm.year.data
+    print(year)
+    query5= db.sql.text("SELECT AVG(amount_paid) AS avg_price FROM billing_history WHERE EXTRACT(MONTH FROM billing_date) = :month  AND EXTRACT(YEAR FROM billing_date) = :year and user_id=:user_id")
+    monthlyavgbilling = db.session.execute(query5,{'month':month,'user_id':current_user.id, 'year':year}).fetchone()._asdict()
+    query6= db.sql.text("SELECT SUM(amount_paid) AS sum_price FROM billing_history WHERE EXTRACT(MONTH FROM billing_date) = :month  AND EXTRACT(YEAR FROM billing_date) = :year and user_id=:user_id")
+    monthlysumbilling = db.session.execute(query6,{'month':month,'user_id':current_user.id, 'year':year}).fetchone()._asdict()
+    query7= db.sql.text("SELECT COUNT(amount_paid) AS count_price FROM billing_history WHERE EXTRACT(MONTH FROM billing_date) = :month  AND EXTRACT(YEAR FROM billing_date) = :year and user_id=:user_id")
+    monthlycountbilling = db.session.execute(query7,{'month':month,'user_id':current_user.id, 'year':year}).fetchone()._asdict()
+    print( month)
+    avg = 0
+    sumtotal =0 
+    count = 0
+    query = db.sql.text("select * from billing_history where user_id=:user and EXTRACT(MONTH FROM billing_date) = :month AND EXTRACT(YEAR FROM billing_date) = :year")
 
-    items = db.session.execute(query,{'user':current_user.id}).fetchall()
+    items = db.session.execute(query,{'user':current_user.id,'month':month,'year':year}).fetchall()
     
     items = [r._asdict() for r in items]
 
-    return render_template('billingHistory.html',items=items)
+    if(monthlyavgbilling['avg_price']):
+        avg = round(monthlyavgbilling['avg_price'],2)
+    
+    if(monthlysumbilling['sum_price']):
+        sumtotal = round(monthlysumbilling['sum_price'],2)
+    
+    if(monthlycountbilling['count_price']):
+        count = round(monthlycountbilling['count_price'],2)
+
+    print(monthlycountbilling['count_price'])
+    return render_template('billingHistory.html',items=items, avg=avg, sum=sumtotal, count=count)
 
 @app.route('/content-metadata')
 @login_required
