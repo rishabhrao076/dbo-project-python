@@ -47,7 +47,7 @@ class UpdateUserForm(FlaskForm):
 
 class UpdatePasswordForm(FlaskForm):
     current_password = PasswordField('Password', validators=[validators.DataRequired()])
-    new_password = PasswordField('Password', validators=[validators.DataRequired()])
+    new_password = PasswordField('New Password', validators=[validators.DataRequired()])
     password_confirmation = PasswordField('Confirm Password', validators=[
         validators.DataRequired(),
         validators.EqualTo('new_password', message='Passwords must match')
@@ -176,7 +176,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     updateForm = UpdateUserForm()
@@ -185,13 +185,26 @@ def profile():
     updatePasswordForm = UpdatePasswordForm()
     query = db.sql.text("select * from card_information where user_id=:user_id")
     cards = db.session.execute(query,{'user_id':current_user.id })
+
+    # Update Password code here
+    if updatePasswordForm.validate_on_submit():
+        user = query = db.sql.text("select * from users where email=:email")
+        user = db.session.execute(query,{'email': current_user.email}).fetchone()._asdict()
+
+        if verify_password(hashedpassword=user['password'],password=updatePasswordForm.current_password.data):
+            query = db.sql.text("update users set password=:new_password where user_id=:user_id")
+            new_password = generate_password_hash(updatePasswordForm.new_password.data)
+            user = db.session.execute(query,{'user_id':current_user.id, 'new_password': new_password})
+            db.session.commit()
+
+        return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm)
+
     return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm)
 
 @app.route('/update-user',methods=['POST'])
 @login_required
 def updateUser():    
     form = UpdateUserForm()
-    print(form.validate())
     if form.validate():
         query = db.sql.text("update users set first_name=:first_name,last_name=:last_name,email=:email where user_id=:user_id")
         user = db.session.execute(query,{'email': form.email.data,'first_name': form.first_name.data, 'last_name':form.last_name.data,'user_id':current_user.id})
