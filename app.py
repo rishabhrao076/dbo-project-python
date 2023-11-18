@@ -273,14 +273,15 @@ def tvShows():
 @app.route('/olap-example')
 @login_required
 def olapExample():
-    query = db.sql.text('''select user_id, billing_date, plan, sum(amount_paid) from billing_history group by rollup(user_id,billing_date, plan);''')
+    query = db.sql.text('''SELECT user_id, billing_date, plan, SUM(amount_paid) FROM billing_history GROUP BY ROLLUP(user_id, billing_date, plan) Having plan IS NOT NULL LIMIT 100;''')
 
-    items = db.session.execute(query).fetchall()
+    result = db.session.execute(query)
+    items = result.fetchall()
+    columns  = result.keys()
 
     items = [r._asdict() for r in items]
 
-            
-    return render_template('olap.html',items=items)
+    return render_template('olap.html',items=items,columns=columns)
 
 @app.route('/search')
 @login_required
@@ -292,6 +293,17 @@ def search():
     items = [r._asdict() for r in items]
 
     return render_template('search.html',items=items)
+
+@app.route('/billing-history')
+@login_required
+def billingHistory():
+    query = db.sql.text("select * from billing_history where user_id=:user;")
+
+    items = db.session.execute(query,{'user':current_user.id}).fetchall()
+    
+    items = [r._asdict() for r in items]
+
+    return render_template('billingHistory.html',items=items)
 
 @app.route('/content-metadata')
 @login_required

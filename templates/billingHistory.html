@@ -1,0 +1,28 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+<table>
+    <thead>
+        <th>Transaction Id</th>
+        <th>Billing Address</th>
+        <th>Amount</th>
+        <th>Plan</th>
+        <th>Date</th>
+    </thead>
+    <tbody>
+        {% for row in items %}
+            <tr>
+                <td>{{row.transaction_id}}</td>
+                <td>{{row.billing_address}}</td>
+                <td>{{row.amount_paid}}</td>
+                <td>{{row.plan}}</td>
+                <td>{{row.billing_date}}</td>
+            </tr>
+        {% endfor %}    
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
