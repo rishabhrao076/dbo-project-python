@@ -37,6 +37,10 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', validators=[validators.DataRequired()])
 
+class UpdateProfileForm(FlaskForm):
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
+    name =  StringField('name', validators=[validators.DataRequired()])
+
 class DeleteUserForm(FlaskForm):
     password = PasswordField('Password',validators=[validators.DataRequired()])
 
@@ -103,6 +107,29 @@ def load_user(user_id):
 def login():    
     form = LoginForm()
     return render_template('login.html',form=form)
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    form = UpdateProfileForm()
+    print(form.email.data)
+    print(request.form.get('fname'))
+    print(current_user.id)
+    user_id = current_user.id
+    email = form.email.data
+    fname = request.form.get('fname')
+    lname = request.form.get('lname')
+    print(form.validate())
+    query = db.sql.text("UPDATE users SET first_name=:fname, last_name=:lname, email=:email WHERE user_id=:user_id")
+    result = db.session.execute(query,{"email":email, "fname":fname, "lname":lname, "user_id": user_id})
+    db.session.commit()
+
+    # print(result)
+    # if result:
+    #     print(result)
+    #     return redirect(url_for('profile'))
+    # else:
+    return redirect(url_for('profile'))    
+    return render_template('profile.html', user=current_user)
 
 @app.route('/login', methods=['POST'])
 def loginUser():
