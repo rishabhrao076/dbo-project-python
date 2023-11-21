@@ -222,7 +222,7 @@ def profile():
     query = db.sql.text("select * from card_information where user_id=:user_id")
     cards = db.session.execute(query,{'user_id':current_user.id })
 
-    query1 = db.sql.text("select count(*) from watch_history where user_id=:user_id")
+    query1 = db.sql.text("SELECT count(*) FROM public.watch_history wh JOIN public.media m ON wh.media_id = m.media_id JOIN public.contents c ON m.content_id = c.content_id JOIN public.content_genre cg ON c.content_id = cg.content_id JOIN public.genre g ON cg.genre_id = g.genre_id WHERE wh.user_id = :user_id")
     totalwatched = db.session.execute(query1,{'user_id':current_user.id}).fetchone()._asdict()
     query2 = db.sql.text("select count(*) from likes where user_id=:user_id and status=true")
     totalliked = db.session.execute(query2,{'user_id':current_user.id}).fetchone()._asdict()
