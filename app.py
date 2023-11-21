@@ -201,7 +201,9 @@ def registerUser():
             login_user(user_obj)
 
             return redirect(url_for('dashboard'))
-
+        else:
+            flash("User Already exists")
+            
     return render_template('register.html',form=form)
 
 @app.route('/logout')

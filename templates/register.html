@@ -3,6 +3,15 @@
 {% block content %}
 <form method="POST" action="{{ url_for('register') }}">
     {{ form.hidden_tag() }}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mt-2">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}   
     <!-- First Name -->
     <div>
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="first_name">
