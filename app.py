@@ -24,10 +24,10 @@ login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 class RegistrationForm(FlaskForm):
-    first_name = StringField('First Name', validators=[validators.DataRequired()])
-    last_name = StringField('Last Name', validators=[validators.DataRequired()])
-    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
-    password = PasswordField('Password', validators=[validators.DataRequired()])
+    first_name = StringField('First Name', validators=[validators.DataRequired(),validators.Length(max=32)])
+    last_name = StringField('Last Name', validators=[validators.DataRequired(),validators.Length(max=32)])
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email(),validators.Length(max=100)])
+    password = PasswordField('Password', validators=[validators.DataRequired(),validators.Length(max=64)])
     password_confirmation = PasswordField('Confirm Password', validators=[
         validators.DataRequired(),
         validators.EqualTo('password', message='Passwords must match')
@@ -38,20 +38,21 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[validators.DataRequired()])
 
 class UpdateProfileForm(FlaskForm):
-    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
-    name =  StringField('name', validators=[validators.DataRequired()])
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email(), validators.Length(max=32)])
+    first_name =  StringField('name', validators=[validators.DataRequired()])
+    last_name =  StringField('name', validators=[validators.DataRequired()])
 
 class DeleteUserForm(FlaskForm):
     password = PasswordField('Password',validators=[validators.DataRequired()])
 
 class UpdateUserForm(FlaskForm):
-    first_name = StringField('First Name', validators=[validators.DataRequired()])
-    last_name = StringField('Last Name', validators=[validators.DataRequired()])
-    email = StringField('Email', validators=[validators.DataRequired(), validators.Email()])
+    first_name = StringField('First Name', validators=[validators.DataRequired(), validators.Length(max=32)])
+    last_name = StringField('Last Name', validators=[validators.DataRequired(), validators.Length(max=32)])
+    email = StringField('Email', validators=[validators.DataRequired(), validators.Email(), validators.Length(max=100)])
 
 class UpdatePasswordForm(FlaskForm):
-    current_password = PasswordField('Password', validators=[validators.DataRequired()])
-    new_password = PasswordField('New Password', validators=[validators.DataRequired()])
+    current_password = PasswordField('Password', validators=[validators.DataRequired(), validators.Length(max=64)])
+    new_password = PasswordField('New Password', validators=[validators.DataRequired(), validators.Length(max=64)])
     password_confirmation = PasswordField('Confirm Password', validators=[
         validators.DataRequired(),
         validators.EqualTo('new_password', message='Passwords must match')
@@ -119,14 +120,12 @@ def login():
 @app.route('/update_profile', methods=['POST'])
 def update_profile():
     form = UpdateProfileForm()
-    print(form.email.data)
-    print(request.form.get('fname'))
-    print(current_user.id)
+
     user_id = current_user.id
     email = form.email.data
     fname = request.form.get('fname')
     lname = request.form.get('lname')
-    print(form.validate())
+
     query = db.sql.text("UPDATE users SET first_name=:fname, last_name=:lname, email=:email WHERE user_id=:user_id")
     result = db.session.execute(query,{"email":email, "fname":fname, "lname":lname, "user_id": user_id})
     db.session.commit()
@@ -230,7 +229,7 @@ def profile():
     totalscreen = db.session.execute(query3,{'user_id':current_user.id}).fetchone()._asdict()
     query4 = db.sql.text("select max(genre) as favgenre from contents c, content_genre cg , genre g,watch_history w, media m  where w.media_id = m.media_id and c.content_id = m.content_id and cg.content_id=c.content_id and g.genre_id=cg.genre_id  and w.user_id=:user_id")
     favgenre = db.session.execute(query4,{'user_id':current_user.id}).fetchone()._asdict()
-   
+
     # Update Password code here
     if updatePasswordForm.validate_on_submit():
         user = query = db.sql.text("select * from users where email=:email")
@@ -244,19 +243,16 @@ def profile():
 
         return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm,
         totalwatched=totalwatched, totalliked=totalliked, totalscreen=totalscreen['totalwatch'], favgenre=favgenre['favgenre'] )
+    
+    #Update Profile code here
+    if updateForm.validate_on_submit():
+        query = db.sql.text("update users set first_name=:first_name,last_name=:last_name,email=:email where user_id=:user_id")
+        user = db.session.execute(query,{'email': updateForm.email.data,'first_name': updateForm.first_name.data, 'last_name':updateForm.last_name.data,'user_id':current_user.id})
+        db.session.commit()
+        return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm, totalwatched=totalwatched, totalliked=totalliked, totalscreen=totalscreen['totalwatch'], favgenre=favgenre['favgenre'] )
 
     return render_template('profile.html',updateForm=updateForm,deleteForm=deleteForm,cardForm=cardForm,cards=cards,updatePasswordForm=updatePasswordForm,
     totalwatched=totalwatched, totalliked=totalliked, totalscreen=totalscreen['totalwatch'], favgenre=favgenre['favgenre'] )
-
-@app.route('/update-user',methods=['POST'])
-@login_required
-def updateUser():    
-    form = UpdateUserForm()
-    if form.validate():
-        query = db.sql.text("update users set first_name=:first_name,last_name=:last_name,email=:email where user_id=:user_id")
-        user = db.session.execute(query,{'email': form.email.data,'first_name': form.first_name.data, 'last_name':form.last_name.data,'user_id':current_user.id})
-        db.session.commit()
-    return redirect(url_for('profile'))
 
 @app.route('/add-card',methods=['POST'])
 @login_required
