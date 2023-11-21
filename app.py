@@ -337,15 +337,26 @@ def tvShows():
 @app.route('/olap-example')
 @login_required
 def olapExample():
-    query = db.sql.text('''SELECT user_id, billing_date, plan, SUM(amount_paid) FROM billing_history GROUP BY ROLLUP(user_id, billing_date, plan) Having plan IS NOT NULL LIMIT 100;''')
+    query = db.sql.text('''SELECT user_id, billing_date, plan, amount_paid, SUM(amount_paid) over (partition by plan order by billing_date rows unbounded preceding) as "moving_total" from billing_history where user_id = :user_id;''')
 
-    result = db.session.execute(query)
+    result = db.session.execute(query,{'user_id': current_user.id})
     items = result.fetchall()
     columns  = result.keys()
 
     items = [r._asdict() for r in items]
 
-    return render_template('olap.html',items=items,columns=columns)
+
+    query2 = db.sql.text('''SELECT g.genre AS FavoriteGenre,COUNT(*) AS WatchCount FROM public.watch_history wh JOIN public.media m ON wh.media_id = m.media_id JOIN public.contents c ON m.content_id = c.content_id JOIN public.content_genre cg ON c.content_id = cg.content_id JOIN public.genre g ON cg.genre_id = g.genre_id WHERE wh.user_id = :user_id GROUP BY ROLLUP (g.genre) HAVING g.genre IS NOT NULL ORDER BY WatchCount DESC;''')
+
+    result2 = db.session.execute(query2,{'user_id': current_user.id})
+    items2 = result2.fetchall()
+    columns2  = result2.keys()
+
+    items2 = [r._asdict() for r in items2]
+
+
+
+    return render_template('olap.html',items=items,columns=columns,items2=items2,columns2=columns2)
 
 @app.route('/search')
 @login_required
